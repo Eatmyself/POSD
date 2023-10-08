@@ -23,6 +23,11 @@ TEST(HelloNode, CreateNode) {
     ASSERT_EQ(&c, tmp->currentItem());
 }
 
+TEST(HelloNode, Node) {
+   Node * a = new Folder("home");
+   ASSERT_EQ(nullptr, a->find("w"));
+}
+
 TEST(StartIterator, FolderIterator) {
     Folder a("home");
     File b("home/Note.txt"),c("home/List.txt");
