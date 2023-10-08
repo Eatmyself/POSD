@@ -47,26 +47,29 @@ public:
 
 class BfsIterator: public Iterator {
 private:
-    void Bfs(Node* step){
-        if(step->ChildList().size()>0){
-            for(int i=0;i<step->ChildList().size();i++){
-                List.push_back(step->ChildList()[i]);
+    void Bfs(Node* composite){
+        List.push_back(composite);
+        int now=0;
+        while(now<List.size()){
+            if(List[now]->ChildList().size()>0){
+                for(int i=0;i<List[now]->ChildList().size();i++){
+                    List.push_back(List[now]->ChildList()[i]);
+                }
             }
+            now++;
         }
-        for(int i=0;i<step->ChildList().size();i++){
-            Bfs(step->ChildList()[i]);
-        }
+
         return;
     }
 public:
     BfsIterator(Node* composite){
-        this->now=0;
+        this->now=1;
         Bfs(composite);
         if(isDone()) this->ptr=nullptr;
         else this->ptr=List[now];
     }
     void first(){
-        now=0;
+        now=1;
         if(isDone()) ptr=nullptr;
         else ptr=List[now];
     }
