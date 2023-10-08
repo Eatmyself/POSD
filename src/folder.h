@@ -1,8 +1,10 @@
 #if !defined(FOLDER)
 #define FOLDER
 
+#include <iostream>
 #include "node.h"
 #include "iterator.h"
+#include "dfs_iterator.h"
 
 #include <string>
 #include <vector>
@@ -26,7 +28,10 @@ public:
     }
 
     void add(Node * node){
-        Children.push_back(node);
+        int lastSlashPos = node->path().find_last_of('/');
+        string nodeFolder = node->path().substr(0,lastSlashPos);
+        if(nodeFolder == NodePath)Children.push_back(node);
+        else throw "exception";
     }
 
     void remove(string path){
@@ -47,10 +52,10 @@ public:
     }
 
     Node * find(string path){
-        for(int i = 0; i < Children.size(); i++){
-            if(Children[i]->path() == path){
-                return Children[i];
-            }
+        DfsIterator it(this);
+        while(!it.isDone()){
+            if(it.currentItem()->path()==path) return it.currentItem();
+            it.next();
         }
         return nullptr;
     }
