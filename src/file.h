@@ -25,6 +25,8 @@ public:
 
     void remove(string path){}
 
+    void removeChild(string path){}
+
     Node * getChildByName(const char * name) const{
         return nullptr;
     }

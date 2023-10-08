@@ -16,6 +16,20 @@ using namespace std;
 class Folder: public Node {
 private:
     Iterator * tmp;
+    void BfsDelete(Node* step, string path){
+        if(step->ChildList().size()>0){
+            for(int i=0;i<step->ChildList().size();i++){
+                if(step->ChildList()[i]->path()==path){
+                    step->removeChild(path);
+                    return;
+                }
+            }
+            for(int i=0;i<step->ChildList().size();i++){
+            BfsDelete(step->ChildList()[i], path);
+            }
+        }
+        return;
+    }
 public:
     Folder(string path){
         this->NodePath = path;
@@ -35,6 +49,10 @@ public:
     }
 
     void remove(string path){
+        BfsDelete(this, path);
+    }
+
+    void removeChild(string path){
         for(int i = 0; i < Children.size(); i++){
             if(Children[i]->path() == path){
                 Children.erase(Children.begin()+i);

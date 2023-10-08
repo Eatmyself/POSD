@@ -24,9 +24,24 @@ TEST(HelloNode, CreateNode) {
 }
 
 TEST(HelloNode, Node) {
-   Node * a = new Folder("home");
-   ASSERT_EQ(nullptr, a->find("w"));
+    Node * a = new Folder("home");
+    ASSERT_EQ(nullptr, a->find("w"));
 }
+
+TEST(HelloNode, deleteNode) {
+    Folder a("home"),b("home/user"),c("home/user/info");
+    File aa("home/Note.txt"),ab("home/List.txt"),ba("home/user/ba.txt");
+    a.add(&b);
+    a.add(&aa);
+    a.add(&ab);
+    b.add(&ba);
+    b.add(&c);
+
+    ASSERT_EQ(&ba, a.find("home/user/ba.txt"));
+    a.remove("home/user/ba.txt");
+    ASSERT_EQ(nullptr, a.find("home/user/ba.txt"));
+}
+
 
 TEST(StartIterator, FolderIterator) {
     Folder a("home");

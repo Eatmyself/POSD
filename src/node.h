@@ -30,6 +30,8 @@ public:
 
     virtual void remove(string path) = 0;
  
+    virtual void removeChild(string path) = 0;
+
     virtual Node * getChildByName(const char * name) const = 0;
 
     virtual Node * find(string path) = 0;
