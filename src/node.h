@@ -1,6 +1,8 @@
 #if !defined(NODE_H)
 #define NODE_H
 
+#include<list>
+#include<vector>
 #include<string>
 
 class Iterator;

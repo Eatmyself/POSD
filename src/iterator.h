@@ -7,6 +7,7 @@
 
 #include "node.h"
 
+class Folder;
 using namespace std;
 
 class Iterator {
@@ -27,30 +28,11 @@ public:
 
 class FolderIterator : public Iterator {
 public:
-    FolderIterator(Node* composite){
-        this->List = composite->ChildList();
-        this->now=0;
-        if(isDone()) this->ptr=nullptr;
-        else this->ptr=List[now];
-    }
-    void first(){
-        now=0;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
-    }
-    Node * currentItem() const{
-        return ptr;
-    }
-    void next(){
-        now++;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
-        if(now>List.size()) now=List.size();
-    }
-    bool isDone() const{
-        if(now>=List.size())return true;
-        else return false;
-    }
+    FolderIterator(Folder* composite);
+    void first();
+    Node * currentItem() const;
+    void next();
+    bool isDone() const;
 };
 
 
