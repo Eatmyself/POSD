@@ -139,7 +139,7 @@ public:
         }
     }
 
-    void accept(Visitor& visitor){
-        visitor.visitFolder(this);
+    void accept(Visitor* visitor){
+        visitor->visitFolder(this);
     }
 };

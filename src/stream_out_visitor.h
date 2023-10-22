@@ -32,7 +32,7 @@ public:
         it->first();
         
         while(!(it->isDone())){
-            it->currentItem()->accept(*this);
+            it->currentItem()->accept(this);
             it->next();
         }
     }

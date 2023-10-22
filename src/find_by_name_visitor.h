@@ -25,7 +25,7 @@ public:
         Iterator * it = folder->createIterator();
         it->first();
         while(!(it->isDone())){
-            it->currentItem()->accept(*this);
+            it->currentItem()->accept(this);
             it->next();
         }
     }

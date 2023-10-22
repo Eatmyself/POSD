@@ -33,7 +33,7 @@ public:
         return pathList;
     }
 
-    void accept(Visitor& visitor){
-        visitor.visitFile(this);
+    void accept(Visitor* visitor){
+        visitor->visitFile(this);
     }
 };

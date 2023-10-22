@@ -66,6 +66,6 @@ public:
         throw string("This node does not support deleting sub node");
     }
 
-    virtual void accept(Visitor& visitor) = 0;
+    virtual void accept(Visitor* visitor) = 0;
 };
 

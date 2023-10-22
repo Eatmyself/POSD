@@ -97,9 +97,9 @@ TEST_F(NodeTest, delete_a_folder) {
 
 TEST_F(NodeTest, FindByName_Visitor) {
     std::list<string> pathList;
-    FindByNameVisitor visitor("favorites");
+    FindByNameVisitor * visitor = new FindByNameVisitor("favorites");
     home->accept(visitor); 
-    pathList = visitor.getPaths();
+    pathList = visitor->getPaths();
 
     for (auto it = pathList.begin(); it != pathList.end(); ++it) {
         ASSERT_EQ("Users/user/home/Documents/favorites", *it);
@@ -107,19 +107,19 @@ TEST_F(NodeTest, FindByName_Visitor) {
 }
 
 TEST_F(NodeTest, StreamOut_Visitor_file ) {
-    StreamOutVisitor visitor;
+    StreamOutVisitor * visitor = new StreamOutVisitor;
     profile->accept(visitor);
 
-    string output = visitor.getResult();
+    string output = visitor->getResult();
     cout<<output;
 
 }
 
 TEST_F(NodeTest, StreamOut_Visitor_folder) {
-    StreamOutVisitor visitor;
+    StreamOutVisitor * visitor = new StreamOutVisitor;
     favorite->accept(visitor);
 
-    string output = visitor.getResult();
+    string output = visitor->getResult();
     cout<<output;
 
 }
