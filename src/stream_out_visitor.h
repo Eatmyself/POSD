@@ -36,10 +36,10 @@ public:
             it->currentItem()->accept(this);
             it->next();
         }
-        if(output!="") output += "\n";
     }
 
     string getResult() const{
+        if(output!="") output += "\n";
         return output;
     }
 };
