@@ -1,91 +1,91 @@
-#if !defined(DFS_ITERATOR_H)
-#define DFS_ITERATOR_H
+#pragma once
+
+#include <stack>
+#include <list>
 
 #include "iterator.h"
 
 class DfsIterator: public Iterator {
-private:
-    void Dfs(Node* step){
-        List.push_back(step);
-        if(step->ChildList().size()>0){
-            for(int i=0;i<step->ChildList().size();i++){
-                Dfs(step->ChildList()[i]);
-            }
-        }
-        return;
-    }
 public:
-    DfsIterator(Node* composite){
-        this->now=1;
-        Dfs(composite);
-        if(isDone()) this->ptr=nullptr;
-        else this->ptr=List[now];
+    DfsIterator(Node* composite) : _root(composite) {}
+
+    void first() {
+        while(!_stack.empty()){
+            _stack.pop();
+        }
+
+        _curr = _root;
+        _pushCurrIter();
+        next();
     }
 
-    void first(){
-        now=1;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
+    Node * currentItem() const {
+        return _curr;
     }
 
-    Node * currentItem() const{
-        return ptr;
-    }
-
-    void next(){
-        now++;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
-        if(now>List.size()) now=List.size();
+    void next() {
+        while(!_stack.empty() && _stack.top()->isDone()){
+            _stack.pop();
+        }
+        if(_stack.empty()){
+            return;
+        }
+        if(!_stack.top()->isDone()){
+            _curr = _stack.top()->currentItem();
+            _stack.top()->next();
+            _pushCurrIter();
+        }
     }
     
-    bool isDone() const{
-        if(now>=List.size())return true;
-        else return false;
+    bool isDone() const {
+        return _stack.empty();
+    }
+private:
+    Node * _root;
+    Node * _curr;
+    std::stack<Iterator *> _stack;
+
+    void _pushCurrIter() {
+        Iterator * it = _curr->createIterator();
+        it->first();
+        _stack.push(it);
     }
 };
 
 class BfsIterator: public Iterator {
-private:
-    void Bfs(Node* composite){
-        List.push_back(composite);
-        int now=0;
-        while(now<List.size()){
-            if(List[now]->ChildList().size()>0){
-                for(int i=0;i<List[now]->ChildList().size();i++){
-                    List.push_back(List[now]->ChildList()[i]);
-                }
-            }
-            now++;
+public:
+    BfsIterator(Node* composite) : _root(composite) {}
+
+    void first(){
+        if(!_nextLevel.empty())
+            _nextLevel.clear();
+
+        _curr = _root;
+        _nextLevel.push_back(_curr);
+        next();
+    }
+
+    Node * currentItem() const {
+        return _curr;
+    }
+
+    void next() {
+        Iterator * it = _curr->createIterator();
+        for(it->first(); !it->isDone(); it->next()){
+            _nextLevel.push_back(it->currentItem());
         }
 
+        _nextLevel.pop_front();
+        _curr = _nextLevel.front();
         return;
     }
-public:
-    BfsIterator(Node* composite){
-        this->now=1;
-        Bfs(composite);
-        if(isDone()) this->ptr=nullptr;
-        else this->ptr=List[now];
+    
+    bool isDone() const {
+        return _nextLevel.empty();
     }
-    void first(){
-        now=1;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
-    }
-    Node * currentItem() const{
-        return ptr;
-    }
-    void next(){
-        now++;
-        if(isDone()) ptr=nullptr;
-        else ptr=List[now];
-        if(now>List.size()) now=List.size();
-    }
-    bool isDone() const{
-        if(now>=List.size())return true;
-        else return false;
-    }
+private:
+    Node * _root;
+    Node * _curr;
+    std::list<Node *> _nextLevel;
 };
 
-#endif // DFS_ITERATOR_H

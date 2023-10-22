@@ -1,25 +1,10 @@
-#if !defined(NULL_ITERATOR_H)
-#define NULL_ITERATOR_H
+#pragma once 
 
 #include "iterator.h"
 
-using namespace std;
-
 class NullIterator : public Iterator {
-    private:
-        Node * ptr;
-    public:
-        NullIterator(){
-            this->ptr=nullptr;
-        }
-        void first(){}
-        Node * currentItem() const{
-            return ptr;
-        }
-        void next(){}
-        bool isDone() const{
-            return true;
-        }
+public:
+    bool isDone () const override {
+        return true;
+    }
 };
-
-#endif // NULL_ITERATOR_H

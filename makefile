@@ -1,19 +1,18 @@
+.PHONY: clean dirs
 
-.PHONY: directories clean stat
+UT_ALL = test/ut_all.cpp
+TEST_HEADERS = test/ut_iterator.h test/ut_file.h test/ut_folder.h test/ut_node.h 
 
-all: directories obj/iterator bin/ut_all
+SRC_HEADERS = src/file.h src/folder.h src/node.h src/iterator.h src/null_iterator.h src/dfs_iterator.h 
 
-obj/iterator:
-	g++ -std=c++11 -c src/iterator.cpp -o obj/iterator.o
 
-bin/ut_all: test/ut_all.cpp test/ut_all.h src/iterator.h src/dfs_iterator.h src/file.h src/folder.h src/node.h src/null_iterator.h
-	g++ -std=c++11 obj/iterator.o test/ut_all.cpp -o bin/ut_all -lgtest -lpthread
+all: dirs bin/ut_all
 
-directories:
-	mkdir -p bin obj
+bin/ut_all: $(UT_ALL) $(TEST_HEADERS) $(SRC_HEADERS)
+	g++  -std=c++11 -Wfatal-errors -Wall -o bin/ut_all $(UT_ALL)  -lgtest -lpthread
 
 clean:
-	rm -f bin/*
+	rm -rf bin
 
-stat:
-	wc src/* test/*
+dirs:
+	mkdir -p bin

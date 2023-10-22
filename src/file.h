@@ -1,48 +1,39 @@
-#if !defined(FILE_H)
-#define FILE_H
+#pragma once
 
+#include <sys/stat.h>
 #include "node.h"
-#include "iterator.h"
-#include "null_iterator.h"
-
-#include <string>
+#include "visitor.h"
 
 class File: public Node {
-private:
-    Iterator * tmp;
 public:
-    File(string path){
-        this->NodePath = path;
-        int lastSlashPos = path.find_last_of('/'); // 查找最後一個斜杠的位置
-        if (lastSlashPos != string::npos) {
-            this->NodeName = path.substr(lastSlashPos + 1); // 提取最後一個斜杠之後的部分
-        } else {
-            this->NodeName = path;
+    File(string path): Node(path) {
+        struct stat sb;
+        if(stat(path.c_str(), &sb)!=0) throw "exception";
+        else{
+            if(!(sb.st_mode & S_IFREG)) throw "exception";
         }
     }
 
-    void add(Node * node){}
-
-    void remove(string path){}
-
-    void removeChild(string path){}
-
-    Node * getChildByName(const char * name) const{
-        return nullptr;
-    }
-
-    Node * find(string path){
-        return nullptr;
-    }
-
-    int numberOfFiles() const{
+    int numberOfFiles() const {
         return 1;
     }
 
-    Iterator * createIterator(){
-        tmp = new NullIterator;
-        return tmp;
+    Node * find(string path) {
+        if (this->path() == path) {
+            return this;
+        }
+        return nullptr;
+    }
+
+    std::list<string> findByName(string name) override {
+        std::list<string> pathList;
+        if (this->name() == name) {
+            pathList.push_back(this->path());
+        }
+        return pathList;
+    }
+
+    void accept(Visitor& visitor){
+        visitor.visitFile(this);
     }
 };
-
-#endif // FILE_H

@@ -1,96 +1,145 @@
-#if !defined(FOLDER)
-#define FOLDER
+#pragma once
 
-#include <iostream>
+#include <list>
+#include <sys/stat.h>
 #include "node.h"
 #include "iterator.h"
 #include "dfs_iterator.h"
-
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <cstring>
+#include "visitor.h"
 
 using namespace std;
 
 class Folder: public Node {
 private:
-    Iterator * tmp;
-    void BfsDelete(Node* step, string path){
-        if(step->ChildList().size()>0){
-            for(int i=0;i<step->ChildList().size();i++){
-                if(step->ChildList()[i]->path()==path){
-                    step->removeChild(path);
-                    return;
-                }
-            }
-            for(int i=0;i<step->ChildList().size();i++){
-            BfsDelete(step->ChildList()[i], path);
-            }
-        }
-        return;
+    list<Node *> _nodes;
+    int version = 0;
+
+protected:
+    void removeChild(Node * target) {
+        _nodes.remove(target);
     }
+
 public:
-    Folder(string path){
-        this->NodePath = path;
-        int lastSlashPos = path.find_last_of('/'); // 查找最後一個斜杠的位置
-        if (lastSlashPos != string::npos) {
-            this->NodeName = path.substr(lastSlashPos + 1); // 提取最後一個斜杠之後的部分
-        } else {
-            this->NodeName = path;
-        }
-    }
-
-    void add(Node * node){
-        int lastSlashPos = node->path().find_last_of('/');
-        string nodeFolder = node->path().substr(0,lastSlashPos);
-        if(nodeFolder == NodePath)Children.push_back(node);
-        else throw "exception";
-    }
-
-    void remove(string path){
-        BfsDelete(this, path);
-    }
-
-    void removeChild(string path){
-        for(int i = 0; i < Children.size(); i++){
-            if(Children[i]->path() == path){
-                Children.erase(Children.begin()+i);
+    class FolderIterator : public Iterator {
+        public:
+            FolderIterator(Folder* composite) :_host(composite), iteratorVersion(composite->version) {}
+            ~FolderIterator() {}
+            void first(){
+                if(iteratorVersion != _host->version){
+                    throw "exception";
+                }
+                _current = _host->_nodes.begin();
             }
+            Node * currentItem() const{
+                return *_current;
+            }
+            void next(){
+                if(iteratorVersion != _host->version){
+                    throw "exception";
+                }
+                _current++;
+            }
+            bool isDone() const{
+                return _current == _host->_nodes.end();
+            }
+
+        private:
+            Folder* const _host;
+            std::list<Node *>::iterator _current;
+            int iteratorVersion;
+    };
+
+    Folder(string path): Node(path) {
+        struct stat sb;
+        if(stat(path.c_str(), &sb)!=0) throw "exception";
+        else{
+            if(!(sb.st_mode & S_IFDIR)) throw "exception";
         }
     }
-    
-    Node * getChildByName(const char * name) const{
-        for(int i = 0; i < Children.size(); i++){
-            if(strcmp(name, Children[i]->name().c_str())==0){
-                return Children[i];
+
+    void add(Node * node) {
+        if (node->path() != this->path() + "/" + node->name()) {
+            throw string("Incorrect path of node: " + node -> path());
+        }
+        _nodes.push_back(node);
+        node->parent(this);
+        version++;
+    }
+
+    Node * getChildByName(const char * name) const {
+        for (auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+            if ((*it)->name() == name) {
+                return *it;
             }
         }
         return nullptr;
     }
 
-    Node * find(string path){
-        DfsIterator it(this);
-        while(!it.isDone()){
-            if(it.currentItem()->path()==path) return it.currentItem();
-            it.next();
+    int numberOfFiles() const {
+        int num = 0;
+        if (_nodes.size() == 0) {
+            return 0;
+        }
+        for (auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+            num += (*it)->numberOfFiles();
+        }
+        return num;
+    }
+
+    Iterator * createIterator() {
+        return new FolderIterator(this);
+    }
+
+    Iterator * dfsIterator() {
+        return new DfsIterator(this);
+    }
+
+    Node * find(string path) {
+        if (this->path() == path) {
+            return this;
+        }
+
+        size_t index = path.find(this->path());
+
+        if (string::npos == index) {
+            return nullptr;
+        }
+
+        for (auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+            Node * result = (*it)->find(path);
+            if (result) {
+                return result;
+            }
         }
         return nullptr;
     }
 
-    int numberOfFiles() const{
-        int number=0;
-        for(int i = 0; i < Children.size(); i++){
-            number += Children[i]->numberOfFiles();
+    std::list<string> findByName(string name) override {
+        std::list<string> pathList;
+        if (this->name() == name) {
+            pathList.push_back(this->path());
         }
-        return number;
+
+        for (auto it = _nodes.begin(); it != _nodes.end(); ++it) {
+            std::list<string> paths = (*it)->findByName(name);
+            for (auto i = paths.begin(); i != paths.end(); i++)
+            {
+                pathList.push_back(*i);  
+            }
+        }
+
+        return pathList;
     }
 
-    Iterator * createIterator(){
-        tmp = new FolderIterator(this);
-        return tmp;
+    void remove(string path) {
+        Node * target = find(path);
+        if (target) {
+            target->parent()->removeChild(target);
+            version++;
+        }
+    }
+
+    void accept(Visitor& visitor){
+        visitor.visitFolder(this);
     }
 };
-
-
-#endif // FOLDER

@@ -1,45 +1,71 @@
-#if !defined(NODE_H)
-#define NODE_H
+#pragma once 
 
-#include<list>
-#include<vector>
 #include<string>
+#include "iterator.h"
+#include "null_iterator.h"
 
-class Iterator;
 using namespace std;
 
+class Visitor;
+
 class Node {
+private:
+    string _path;
+    Node * _parent;
 protected:
-    vector<Node *> Children;
-    string NodePath;
-    string NodeName;
+
+    Node(string path): _path(path) {}
+
 public:
-    string name() const{
-        return NodeName;
+    virtual ~Node() {}
+
+    Node * parent() {
+        return _parent;
+    }
+
+    void parent(Node * parent) {
+        _parent = parent;
     }
     
-    string path() const{
-        return NodePath;
+    virtual void removeChild(Node * target) {
+        throw string("This node does not support removing sub node");
+    }
+
+    string name() const {
+        size_t slash = _path.rfind("/");
+        return _path.substr(slash+1);
     }
     
-    vector<Node *> ChildList(){
-        return Children;
+    string path() const {
+        return _path;
     }
     
-    virtual void add(Node * node) = 0;
+    virtual void add(Node * node) {
+        throw string("This node does not support adding sub node");
+    }
 
-    virtual void remove(string path) = 0;
- 
-    virtual void removeChild(string path) = 0;
-
-    virtual Node * getChildByName(const char * name) const = 0;
-
-    virtual Node * find(string path) = 0;
+    virtual Node * getChildByName(const char * name) const {
+        return nullptr;
+    }
 
     virtual int numberOfFiles() const = 0;
 
-    virtual Iterator * createIterator() = 0;
+    virtual Iterator * createIterator() {
+        return new NullIterator();
+    }
+
+    virtual Iterator * dfsIterator() {
+        return new NullIterator();
+    }
+
+    virtual Node * find(string path) = 0;
+    
+    virtual std::list<string> findByName(string name) = 0;
+    
+    virtual void remove(string path) {
+        throw string("This node does not support deleting sub node");
+    }
+
+    virtual void accept(Visitor& visitor) = 0;
 };
 
-
-#endif // NODE_H
