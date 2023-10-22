@@ -10,8 +10,10 @@
 class StreamOutVisitor : public Visitor {
 private:
     string output = "";
+    int visitnum=0;
 public:
     void visitFile(File * file){
+        visitnum++;
         ifstream myFile;
         string line;
         myFile.open(file->path());
@@ -39,7 +41,7 @@ public:
     }
 
     string getResult() const{
-        if(output!="") output += "\n";
+        if(visitnum>1) return output + "\n";
         return output;
     }
 };
