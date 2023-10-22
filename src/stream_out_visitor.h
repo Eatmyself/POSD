@@ -16,13 +16,14 @@ public:
         string line;
         myFile.open(file->path());
 
+        if(output!="") output += "\n";
         output += "_____________________________________________\n";
         output += file->path() + "\n";
         output += "---------------------------------------------\n";
         while (getline(myFile, line)) {
             output += line + "\n";
         }
-        output += "\n_____________________________________________\n\n";
+        output += "_____________________________________________\n";
 
         myFile.close();
     }
@@ -35,6 +36,7 @@ public:
             it->currentItem()->accept(this);
             it->next();
         }
+        if(output!="") output += "\n";
     }
 
     string getResult() const{

@@ -114,7 +114,7 @@ TEST_F(IteratorTest, DFS) {
 
 
 TEST_F(IteratorTest, BFS) {
-    Iterator * bfsIt = new BfsIterator(home);
+    Iterator * bfsIt = x BfsIterator(home);
 
     bfsIt->first();
     ASSERT_EQ("my_profile.txt", bfsIt->currentItem()->name());
