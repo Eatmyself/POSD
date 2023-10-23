@@ -146,3 +146,19 @@ TEST_F(IteratorTest, BFS) {
     bfsIt->next();
     ASSERT_TRUE(bfsIt->isDone());
 }
+
+TEST_F(IteratorTest, delete_node) {
+    Iterator * it = home->createIterator();
+    it->first();
+    ASSERT_FALSE(it->isDone());
+    
+    ASSERT_EQ("my_profile.txt", it->currentItem()->name());
+    
+    it->next();
+    ASSERT_EQ("Documents", it->currentItem()->name());
+
+    home->remove("Users/user/home/Documents/favorites/cqrs.pdf");
+
+    ASSERT_ANY_THROW(it->next());
+    
+}

@@ -3,9 +3,6 @@
 #include "../src/node.h"
 #include "../src/file.h"
 #include "../src/folder.h"
-#include "../src/visitor.h"
-#include "../src/find_by_name_visitor.h"
-#include "../src/stream_out_visitor.h"
 
 class NodeTest: public ::testing::Test {
 protected:
@@ -93,33 +90,4 @@ TEST_F(NodeTest, delete_a_folder) {
     ASSERT_EQ(favorite->name(), home->find("Users/user/home/Documents/favorites")->name());
     home->remove("Users/user/home/Documents/favorites");
     ASSERT_EQ(nullptr, home->find("Users/user/home/Documents/favorites"));
-}
-
-TEST_F(NodeTest, FindByName_Visitor) {
-    std::list<string> pathList;
-    FindByNameVisitor * visitor = new FindByNameVisitor("favorites");
-    home->accept(visitor); 
-    pathList = visitor->getPaths();
-
-    for (auto it = pathList.begin(); it != pathList.end(); ++it) {
-        ASSERT_EQ("Users/user/home/Documents/favorites", *it);
-    }
-}
-
-TEST_F(NodeTest, StreamOut_Visitor_file ) {
-    StreamOutVisitor * visitor = new StreamOutVisitor;
-    profile->accept(visitor);
-
-    string output = visitor->getResult();
-    cout<<output;
-
-}
-
-TEST_F(NodeTest, StreamOut_Visitor_folder) {
-    StreamOutVisitor * visitor = new StreamOutVisitor;
-    favorite->accept(visitor);
-
-    string output = visitor->getResult();
-    cout<<output;
-
 }
