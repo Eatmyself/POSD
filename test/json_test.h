@@ -65,6 +65,21 @@ TEST(Beautify, Visitor) {
     cout<<vi->getResult()<<endl;
 }
 
+TEST(Beautify, Visitor2) {
+    JsonObject *jo = new JsonObject;
+    Value * v1 = new StringValue("value1");
+    jo->set("key1", v1);
+    Value * v2 = new StringValue("value2");
+    jo->set("key2", v2);
+
+    JsonObject *j_composite = new JsonObject;
+    j_composite->set("keyc", jo);
+
+    BeautifyVisitor * vi = new BeautifyVisitor;
+    j_composite->accept(vi);
+    cout<<vi->getResult()<<endl;
+}
+
 /*
 TEST(Jsoniterator, biggerKey) {
     JsonObject *jo = new JsonObject;

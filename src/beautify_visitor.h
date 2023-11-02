@@ -11,7 +11,6 @@ private:
 public:
     BeautifyVisitor(){}
     void visitJsonObject(JsonObject * obj){
-        for(int i=0;i<num;i++)s+="    ";
         s+="{\n";
         JsonIterator* it = obj->createIterator();
         num++;
@@ -32,7 +31,6 @@ public:
     }
 
     void visitStringValue(StringValue * val){
-        for(int i=0;i<num;i++)s+="    ";
         s += val->toString();
     }
 
