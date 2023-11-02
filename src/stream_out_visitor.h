@@ -8,40 +8,34 @@
 #include <sstream>
 
 class StreamOutVisitor : public Visitor {
-private:
-    string output = "";
-    int visitnum=0;
 public:
-    void visitFile(File * file){
-        visitnum++;
-        ifstream myFile;
-        string line;
-        myFile.open(file->path());
+    void visitFile(File * file) override {
+        std::ifstream t(file->path());
+        std::stringstream buffer;
 
-        if(output!="") output += "\n";
-        output += "_____________________________________________\n";
-        output += file->path() + "\n";
-        output += "---------------------------------------------\n";
-        while (getline(myFile, line)) {
-            output += line + "\n";
-        }
-        output += "_____________________________________________\n";
+        buffer << t.rdbuf(); 
 
-        myFile.close();
+        _result += "_____________________________________________\n";
+        _result += file->path() + "\n";
+        _result += "---------------------------------------------\n";
+        _result += buffer.str() + "\n";
+        _result += "_____________________________________________\n";
     }
 
-    void visitFolder(Folder * folder){
+    void visitFolder(Folder * folder) override {
         Iterator * it = folder->createIterator();
-        it->first();
-        
-        while(!(it->isDone())){
+
+        for(it->first(); !it->isDone(); it->next()) {
             it->currentItem()->accept(this);
-            it->next();
+            if(dynamic_cast<File *>(it->currentItem()))
+                _result += "\n";
         }
     }
 
-    string getResult() const{
-        if(visitnum>1) return output + "\n";
-        return output;
+    string getResult() const {
+        return _result;
     }
+
+private:
+    string _result;
 };

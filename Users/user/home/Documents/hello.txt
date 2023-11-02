@@ -1,2 +1,0 @@
-Documents/hello.txt
-hello.txt

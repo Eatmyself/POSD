@@ -5,33 +5,35 @@
 #include "visitor.h"
 
 class FindByNameVisitor : public Visitor {
-private:
-    string targetName;
-    std::list<string> pathList;
 public:
-    FindByNameVisitor(string name): targetName(name) {}
+    FindByNameVisitor(string name) : _name(name) {}
 
-    void visitFile(File * file){
-        if (file->name() == targetName) {
-            pathList.push_back(file->path());
+    void visitFile(File * file) override {
+        if (file->name() == _name) {
+            _paths.push_back(file->path());
         }
     }
 
-    void visitFolder(Folder * folder){
-        if (folder->name() == targetName) {
-            pathList.push_back(folder->path());
+    void visitFolder(Folder * folder) override {
+        if (folder->name() == _name) {
+            _paths.push_back(folder->path());
         }
-        
+
         Iterator * it = folder->createIterator();
+
         it->first();
-        while(!(it->isDone())){
+        for (; !it->isDone(); it->next()) {
             it->currentItem()->accept(this);
-            it->next();
         }
+
+        delete it;
     }
 
-    std::list<string> getPaths() const{
-        return pathList;
+    std::list<string> getPaths() const {
+        return _paths;
     }
+
+private:
+    string _name;
+    std::list<string> _paths;
 };
-

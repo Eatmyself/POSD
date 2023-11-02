@@ -1,24 +1,25 @@
 #pragma once
 
-#include <sys/stat.h>
 #include "node.h"
 #include "visitor.h"
 
 class File: public Node {
 public:
     File(string path): Node(path) {
-        struct stat sb;
-        if(stat(path.c_str(), &sb)!=0) throw "exception";
-        else{
-            if(!(sb.st_mode & S_IFREG)) throw "exception";
+        struct stat fileInfo;
+        const char *c = path.c_str();
+        if(lstat(c, &fileInfo) == 0){
+            if(S_ISREG(fileInfo.st_mode))
+                return;
         }
+        throw "No File exists";
     }
 
-    int numberOfFiles() const {
+    int numberOfFiles() const override {
         return 1;
     }
 
-    Node * find(string path) {
+    Node * find(string path) override {
         if (this->path() == path) {
             return this;
         }
@@ -33,7 +34,7 @@ public:
         return pathList;
     }
 
-    void accept(Visitor* visitor){
+    void accept(Visitor * visitor) override {
         visitor->visitFile(this);
     }
 };

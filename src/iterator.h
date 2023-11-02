@@ -3,6 +3,7 @@
 #include<list>
 
 class Node;
+class Folder;
 
 class Iterator {
 public:
