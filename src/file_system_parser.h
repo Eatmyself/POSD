@@ -8,6 +8,8 @@
 using std::string;
 
 class FileSystemParser {
+private:
+    FileSystemBuilder _builder;
 public:
     FileSystemParser(FileSystemBuilder * builder): _builder(builder);
 
