@@ -43,7 +43,7 @@ TEST(file_system, builder) {
     TreeVisitor * visitor = new TreeVisitor(OrderBy::NameWithFolderFirst);
 
     fsb.getRoot()->accept(visitor);
-    cout<< visitor->getTree() <<endl;
+    //cout<< visitor->getTree() <<endl;
 }
 
 TEST(file_system, parser) {
@@ -55,5 +55,5 @@ TEST(file_system, parser) {
     TreeVisitor * visitor = new TreeVisitor(OrderBy::NameWithFolderFirst);
 
     fsp.getRoot()->accept(visitor);
-    cout<< visitor->getTree() <<endl;
+    //cout<< visitor->getTree() <<endl;
 }

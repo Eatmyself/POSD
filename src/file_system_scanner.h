@@ -50,7 +50,7 @@ public:
         }
 
         string nodeName = dirEntry->d_name;
-        if (nodeName != "." && nodeName != ".."){
+        if (nodeName != "." && nodeName != ".." && nodeName[0]!='.'){
             _currentnode = _path + "/" + nodeName;
             return;
         }

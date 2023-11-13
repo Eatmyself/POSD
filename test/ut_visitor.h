@@ -197,5 +197,5 @@ TEST_F(VisitorTest, TreeVisitor) {
     TreeVisitor * visitor = new TreeVisitor(OrderBy::NameWithFolderFirst);
 
     home->accept(visitor);
-    cout<< visitor->getTree() <<endl;
+    //cout<< visitor->getTree() <<endl;
 }
