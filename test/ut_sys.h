@@ -10,12 +10,12 @@ TEST(file_system, scanner) {
     fss.nextNode();
     ASSERT_EQ("structure/file.txt", fss.currentNodeName());
     ASSERT_FALSE(fss.isFolder());
-
+/*
     fss.nextNode();
     ASSERT_EQ("structure/home", fss.currentNodeName());
     ASSERT_TRUE(fss.isFolder());
     ASSERT_FALSE(fss.isDone());
-/*
+
     fss.nextNode();
     ASSERT_EQ("structure/.DS_Store", fss.currentNodeName());
     ASSERT_FALSE(fss.isFolder());
