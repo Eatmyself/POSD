@@ -22,6 +22,7 @@ public:
     }
 
     void visitFolder(Folder * folder){
+        //todo 把印東西改到迴圈裡，印了再accept
         for(int i=0;i<n;i++) _result += "│   ";
         if(last) _result += "└── " + folder->name() + "\n";
         else _result += "├── " + folder->name() + "\n";

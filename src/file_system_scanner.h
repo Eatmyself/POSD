@@ -1,20 +1,60 @@
 #pragma once
 
 #include <string>
+#include <dirent.h>
+#include <sys/stat.h>
 
 using std::string;
 
 class FileSystemScanner {
+private:
+    DIR* directory;
+    struct dirent* dirEntry;
+    string _currentnode;
+    string _path;
 public:
-    bool isFile();
+    FileSystemScanner() : directory(nullptr), dirEntry(nullptr) {}
 
-    bool isFolder();
+    bool isFile(){
+        return dirEntry != nullptr && (dirEntry->d_type != DT_DIR);
+    }
 
-    bool isDone();
+    bool isFolder(){
+        return dirEntry != nullptr && (dirEntry->d_type == DT_DIR);
+    }
 
-    void setPath(string path);
+    bool isDone(){
+        return directory == nullptr || dirEntry == nullptr;
+    }
 
-    string currentNodeName();
+    void setPath(string path){
+        _path = path;
+        directory = opendir(path.c_str());
+        if (directory == nullptr) {
+            throw "path error";
+        }
+    }
 
-    void nextNode();
+    string currentNodeName(){
+        return _currentnode;
+    }
+
+    void nextNode(){
+        if (directory == nullptr) {
+            return;
+        }
+
+        dirEntry = readdir(directory);
+        if (dirEntry == nullptr) {
+            return;
+        }
+
+        string nodeName = dirEntry->d_name;
+        if (nodeName != "." && nodeName != ".."){
+            _currentnode = _path + "/" + nodeName;
+            return;
+        }
+
+        return nextNode(); // Skip "." and ".."
+    }
 };
