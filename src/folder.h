@@ -265,16 +265,33 @@ public:
                 _itnode.push_back(*it);
             }
             _itnode.sort([](Node* a, Node* b){
+                string Aname;
+                string Bname;
                 if (Folder* folder = dynamic_cast<Folder*>(a)){
-                    if (File* file = dynamic_cast<File*>(b)) return true;
-                    else return a->name() < b->name();
-                } 
-                else{
-                    if(Folder* folder = dynamic_cast<Folder*>(b)) return false;
-                    else if( (a->name().find(".") == string::npos) && !(b->name().find(".") == string::npos)) return false;
-                    else if( !(a->name().find(".") == string::npos) && (b->name().find(".") == string::npos)) return true;
-                    else return a->name() < b->name();
+                    Aname = "folder." + a->name();
                 }
+                else{
+                    size_t lastDotPos = a->name().find_last_of('.');
+                    if (lastDotPos != std::string::npos) {
+                        string extension = a->name().substr(lastDotPos + 1); // 提取最後一個點號之後的部分
+                        Aname = extension + "." + a->name();
+                    } else {
+                        Aname = "file." + a->name();
+                    }
+                }
+                if (Folder* folder = dynamic_cast<Folder*>(b)){
+                    Bname = "folder." + Bname;
+                }
+                else{
+                    size_t lastDotPos = b->name().find_last_of('.');
+                    if (lastDotPos != std::string::npos) {
+                        string extension = b->name().substr(lastDotPos + 1); // 提取最後一個點號之後的部分
+                        Bname = extension + "." + b->name();
+                    } else {
+                        Bname = "file." + b->name();
+                    }
+                }
+                return Aname<Bname;
             });
         }
 

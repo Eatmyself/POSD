@@ -144,6 +144,9 @@ TEST_F(IteratorTest, oderbyKind) {
     it->first();
     ASSERT_FALSE(it->isDone());
 
+    ASSERT_EQ("my_profile", it->currentItem()->name());
+
+    it->next();
     ASSERT_EQ("Documents", it->currentItem()->name());
     
     it->next();
@@ -151,9 +154,6 @@ TEST_F(IteratorTest, oderbyKind) {
 
     it->next();
     ASSERT_EQ("hello.txt", it->currentItem()->name());
-
-    it->next();
-    ASSERT_EQ("my_profile", it->currentItem()->name());
 
     it->next();
     ASSERT_TRUE(it->isDone());
