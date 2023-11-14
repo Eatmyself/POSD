@@ -3,6 +3,7 @@
 #include "../src/file.h"
 #include "../src/iterator.h"
 #include "../src/dfs_iterator.h"
+#include "../src/tree_visitor.h"
 
 class IteratorTest: public ::testing::Test {
 protected:
