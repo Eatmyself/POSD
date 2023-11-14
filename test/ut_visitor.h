@@ -194,7 +194,7 @@ TEST_F(VisitorTest, streamOutNestedFolder) {
 }
 
 TEST_F(VisitorTest, TreeVisitor) {
-    TreeVisitor * visitor = new TreeVisitor(OrderBy::NameWithFolderFirst);
+    TreeVisitor * visitor = new TreeVisitor(OrderBy::Kind);
 
     home->accept(visitor);
     //cout<< visitor->getTree() <<endl;

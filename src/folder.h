@@ -273,24 +273,25 @@ public:
                 else{
                     size_t lastDotPos = a->name().find_last_of('.');
                     if (lastDotPos != std::string::npos) {
-                        string extension = a->name().substr(lastDotPos + 1); // 提取最後一個點號之後的部分
+                        string extension = a->name().substr(lastDotPos + 1);
                         Aname = extension + "." + a->name();
                     } else {
                         Aname = "file." + a->name();
                     }
                 }
                 if (Folder* folder = dynamic_cast<Folder*>(b)){
-                    Bname = "folder." + Bname;
+                    Bname = "folder." + b->name();
                 }
                 else{
                     size_t lastDotPos = b->name().find_last_of('.');
                     if (lastDotPos != std::string::npos) {
-                        string extension = b->name().substr(lastDotPos + 1); // 提取最後一個點號之後的部分
+                        string extension = b->name().substr(lastDotPos + 1);
                         Bname = extension + "." + b->name();
                     } else {
                         Bname = "file." + b->name();
                     }
                 }
+                //cout<<"Aname: "<<Aname<<" Bname: "<<Bname<<" result: "<<(Aname<Bname)<<endl;
                 return Aname<Bname;
             });
         }
