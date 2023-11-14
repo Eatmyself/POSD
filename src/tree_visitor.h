@@ -2,12 +2,15 @@
 
 #include "visitor.h"
 #include "order_by.h"
+#include <list>
+
+using namespace std;
 
 class TreeVisitor: public Visitor {
 private:
     string _result;
     OrderBy ob;
-    int n = 0;
+    list<string> tab;
 public:
     TreeVisitor(OrderBy orderBy): ob(orderBy){
         _result += ".\n";
@@ -23,17 +26,17 @@ public:
         while(!(it->isDone())){
             Node * tmp = it->currentItem();
             it->next();
+            for (auto it = tab.begin(); it != tab.end(); ++it) _result += (*it);
             if(it->isDone()){
-                for(int i=0;i<n;i++) _result += "│   ";
                 _result += "└── " + tmp->name() + "\n";
+                tab.push_back ("    ");
             }
             else{
-                for(int i=0;i<n;i++) _result += "│   ";
                 _result += "├── " + tmp->name() + "\n";
+                tab.push_back ("│   ");
             }
-            n++;
             tmp->accept(this);
-            n--;
+            tab.pop_back();
         }
     }
 
