@@ -13,6 +13,9 @@ public:
         root = tmp;
         _obj.push(tmp);
     }
+    ~JsonBuilder() {
+        delete root;
+    }
 
     void buildValue(std::string key, std::string value){
         Value * v = new StringValue(value);

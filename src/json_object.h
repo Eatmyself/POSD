@@ -57,6 +57,11 @@ class JsonObject : public Value {
                 JsonObjectIterator(JsonObject * val): v(val) {
                     it = v->_jsonobj.begin();
                 }
+
+                ~JsonObjectIterator(){
+                    delete v;
+                }
+
                 void first(){
                     it = v->_jsonobj.begin();
                 }

@@ -10,6 +10,11 @@ class JsonParser {
 public:
     JsonParser(JsonScanner * scanner, JsonBuilder * builder): _scanner(scanner), _builder(builder) {}
 
+    ~JsonParser(){
+        delete _scanner;
+        delete _builder;
+    }
+
     void parse() {
         std::string key = "";
         while (!_scanner->isDone()) {
