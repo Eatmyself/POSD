@@ -54,7 +54,7 @@ protected:
         if(domainObject != nullptr) {
             return domainObject;
         }
-        
+
         sqlite3_exec(_db, findByIdStmt(id).c_str(), callback, NULL, &_errorMessage);
         DomainObject * object = getDomainObject(id);
         if(object != nullptr) {

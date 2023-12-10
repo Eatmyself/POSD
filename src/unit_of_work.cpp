@@ -31,9 +31,9 @@ void UnitOfWork::registerNew(DomainObject * domainObject) {
 }
 
 void UnitOfWork::registerDeleted(DomainObject * domainObject) {
-    _new.erase(domainObject->id());
-    _clean.erase(domainObject->id());
-    _dirty.erase(domainObject->id());
+    //if(_clean.count(domainObject->id()))_clean.erase(domainObject->id());
+    //else if(_new.count(domainObject->id()))_new.erase(domainObject->id());
+    //else if(_dirty.count(domainObject->id()))_dirty.erase(domainObject->id());
     _deleted[domainObject->id()] = domainObject;
 }
 
@@ -55,18 +55,35 @@ bool UnitOfWork::inDeleted(std::string id) const {
 
 void UnitOfWork::commit() {
     for(auto dirty : _dirty) {
-        DrawingMapper::instance()->update(dirty.second->id());
+        if(Drawing *dr = dynamic_cast<Drawing*>(dirty.second)) {
+            DrawingMapper::instance()->update(dirty.second->id());
+        }
+        else if(Painter *pa = static_cast<Painter*>(dirty.second)) {
+            PainterMapper::instance()->update(dirty.second->id());   
+        }
+        else throw "exception";
         registerClean(dirty.second);
     }
     _dirty.clear();
     for(auto newObj : _new) {
-        PainterMapper::instance()->add(newObj.second);
+        if(Drawing *dr = dynamic_cast<Drawing*>(newObj.second)) {
+            DrawingMapper::instance()->add(newObj.second);
+        }
+        else if(Painter *pa = static_cast<Painter*>(newObj.second)) {
+            PainterMapper::instance()->add(newObj.second);  
+        }
+        else throw "exception";
         registerClean(newObj.second);
     }
     _new.clear();
     for(auto delObj : _deleted) {
-        PainterMapper::instance()->del(delObj.second->id());
-        DrawingMapper::instance()->del(delObj.second->id());
+        if(Drawing *dr = dynamic_cast<Drawing*>(delObj.second)) {
+            DrawingMapper::instance()->del(delObj.second->id());
+        }
+        else if(Painter *pa = static_cast<Painter*>(delObj.second)) {
+            PainterMapper::instance()->del(delObj.second->id()); 
+        }
+        else throw "exception";
     }
     _deleted.clear();
 }

@@ -112,6 +112,14 @@ protected:
         rc = sqlite3_exec(db_p, s2, NULL, NULL, &err_msg);
         display_err_msg_and_fail_if_any(rc);
         ASSERT_EQ(SQLITE_OK, rc);
+
+        const char *s4 = "INSERT INTO painter"
+                         "(ID, name)"
+                         "values"
+                         "('p_0004', 'HaHa')";
+        rc = sqlite3_exec(db_p, s4, NULL, NULL, &err_msg);
+        display_err_msg_and_fail_if_any(rc);
+        ASSERT_EQ(SQLITE_OK, rc);
     }
 
     void display_err_msg_and_fail_if_any(int rc)
@@ -133,6 +141,19 @@ protected:
 
 TEST_F(DBSuite, Sanity)
 {
+    UnitOfWork * uow = UnitOfWork::instance();
+    DrawingMapper * mapper = DrawingMapper::instance();
+    Drawing* drawing = mapper->find("d_0001");
+    Painter * painter = PainterMapper::instance()->find("p_0002");
+    drawing->setPainter(painter);
+    ASSERT_EQ(painter, drawing->painter());
+    ASSERT_FALSE(uow->inClean("d_0001"));
+    ASSERT_TRUE(uow->inDirty("d_0001"));
+
+    uow->commit();
+    ASSERT_EQ(painter, drawing->painter());
+    ASSERT_TRUE(uow->inClean("d_0001"));
+    ASSERT_FALSE(uow->inDirty("d_0001"));
 }
 
 TEST_F(DBSuite, findDrawing)
@@ -145,6 +166,35 @@ TEST_F(DBSuite, findDrawing)
     EXPECT_FALSE(UnitOfWork::instance()->inDirty("p_0001"));
     ASSERT_EQ(drawing->id(), "d_0001");
     ASSERT_EQ(drawing->getShape(0)->perimeter(), 3);
-    ASSERT_EQ(drawing->painter()->id(), "p_0001");
-    ASSERT_EQ(drawing->painter()->name(), "Patrick");
+    ASSERT_EQ(drawing->painter()->id(), "p_0002");
+    ASSERT_EQ(drawing->painter()->name(), "Mary");
+}
+
+TEST_F(DBSuite, UnitOfWorkRegisterNew)
+{
+    Painter * painter = new Painter("p_0003", "Howard");
+    UnitOfWork::instance()->registerNew(painter);
+    ASSERT_TRUE(UnitOfWork::instance()->inNew("p_0003"));
+    UnitOfWork::instance()->commit();
+    ASSERT_FALSE(UnitOfWork::instance()->inNew("p_0003"));
+    ASSERT_TRUE(UnitOfWork::instance()->inClean("p_0003"));
+}
+
+TEST_F(DBSuite, delPainter)
+{
+    Painter * p = new Painter("p_0003", "Howard");
+    UnitOfWork::instance()->registerNew(p);
+    ASSERT_TRUE(UnitOfWork::instance()->inNew("p_0003"));
+    UnitOfWork::instance()->commit();
+    ASSERT_FALSE(UnitOfWork::instance()->inNew("p_0003"));
+    ASSERT_TRUE(UnitOfWork::instance()->inClean("p_0003"));
+
+    ASSERT_EQ(false, pm->isLoaded("p_0003"));
+    Painter * painter = pm->find("p_0003");
+    ASSERT_EQ(true, pm->isLoaded("p_0003"));
+    ASSERT_EQ(painter->id(), "p_0003");
+    UnitOfWork::instance()->registerDeleted(painter);
+    ASSERT_TRUE(UnitOfWork::instance()->inDeleted("p_0003"));
+    UnitOfWork::instance()->commit();
+    ASSERT_FALSE(UnitOfWork::instance()->inDeleted("p_0003"));
 }
