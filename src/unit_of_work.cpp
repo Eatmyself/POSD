@@ -31,9 +31,9 @@ void UnitOfWork::registerNew(DomainObject * domainObject) {
 }
 
 void UnitOfWork::registerDeleted(DomainObject * domainObject) {
-    if(_clean.count(domainObject->id()))_clean.erase(domainObject->id());
-    else if(_new.count(domainObject->id()))_new.erase(domainObject->id());
-    else if(_dirty.count(domainObject->id()))_dirty.erase(domainObject->id());
+    _clean.erase(domainObject->id());
+    _new.erase(domainObject->id());
+    _dirty.erase(domainObject->id());
     _deleted[domainObject->id()] = domainObject;
 }
 
