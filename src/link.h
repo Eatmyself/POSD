@@ -7,7 +7,7 @@ class Link: public Node {
 private:
     Node * _node;
 public:
-    Link(Node * node,string path): Node(path), _node(node) {}
+    Link(string path, Node * node): Node(path), _node(node) {}
 
     void rename(string name) override{
         return _node->rename(name);

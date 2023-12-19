@@ -122,7 +122,7 @@ TEST_F(NodeTest, rename_node) {
 
 TEST_F(NodeTest, link) {
     Node * funny = new File("structure/home/Downloads/funny.png");
-    Node * link = new Link(funny, "structure/home/Downloads/link_to_funny.png");
+    Node * link = new Link("structure/home/Downloads/link_to_funny.png", funny);
     download->add(funny);
     download->add(link);
     
