@@ -20,6 +20,9 @@ TEST(FileSystemBuilder, Normal) {
     it->first();
     ASSERT_FALSE(it->isDone());
     
+    ASSERT_EQ(".DS_Store", it->currentItem()->name());
+    
+    it->next();
     ASSERT_EQ("Documents", it->currentItem()->name());
     
     it->next();
