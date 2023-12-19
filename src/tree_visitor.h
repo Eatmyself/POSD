@@ -16,7 +16,6 @@ public:
         } else {
             _result += folder->name() + "\n";
         }
-
         Iterator * it = folder->createIterator(_factory);
         it->first();
         while (!it->isDone()) {

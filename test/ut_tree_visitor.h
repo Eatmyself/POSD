@@ -30,6 +30,8 @@ protected:
 
         programming = new Folder("structure2/home/Documents/programming");
         document->add(programming);
+        linktop = new Link("structure2/home/Documents/link_to_programming", programming);
+        document->add(linktop);
         cpp = new File("structure2/home/Documents/programming/cpp.pub");
         programming->add(cpp);
         oop = new File("structure2/home/Documents/programming/oop.pdf");
@@ -72,6 +74,7 @@ protected:
     Node * note;
     Node * hello2;
     Node * programming;
+    Node * linktop;
     Node * cpp;
     Node * oop;
     Node * python;
@@ -87,6 +90,7 @@ TEST_F(TreeVisitorTest, OrderByName) {
     "│   ├── clean-architecture.pdf\n"
     "│   ├── domain-driven-design.pub\n"
     "│   ├── hello.txt\n"
+    "│   ├── link_to_programming\n"
     "│   ├── note.txt\n"
     "│   ├── object-oriented-analysis-and-design.pdf\n"
     "│   └── programming\n"
@@ -98,12 +102,12 @@ TEST_F(TreeVisitorTest, OrderByName) {
     "├── hello.txt\n"
     "└── my_profile\n";
 
-
     TreeVisitor * tree = new TreeVisitor(OrderByNameIteratorFactory::instance());
     home->accept(tree);
     string result = tree->getTree();
 
     ASSERT_EQ(expected, result);
+    //std::cout<<result<<endl;
 
     delete tree;
 }
@@ -120,6 +124,7 @@ TEST_F(TreeVisitorTest, OrderByNameWithFolderFirst) {
     "│   ├── clean-architecture.pdf\n"
     "│   ├── domain-driven-design.pub\n"
     "│   ├── hello.txt\n"
+    "│   ├── link_to_programming\n"
     "│   ├── note.txt\n"
     "│   └── object-oriented-analysis-and-design.pdf\n"
     "├── Downloads\n"
@@ -132,6 +137,7 @@ TEST_F(TreeVisitorTest, OrderByNameWithFolderFirst) {
     string result = tree->getTree();
 
     ASSERT_EQ(expected, result);
+    //std::cout<<result<<endl;
 
     delete tree;
 }
@@ -145,6 +151,7 @@ TEST_F(TreeVisitorTest, OrderByKind) {
     "│   │   ├── oop.pdf\n"
     "│   │   ├── cpp.pub\n"
     "│   │   └── python.pub\n"
+    "│   ├── link_to_programming\n"
     "│   ├── clean-architecture.pdf\n"
     "│   ├── object-oriented-analysis-and-design.pdf\n"
     "│   ├── domain-driven-design.pub\n"
@@ -159,6 +166,7 @@ TEST_F(TreeVisitorTest, OrderByKind) {
     string result = tree->getTree();
 
     ASSERT_EQ(expected, result);
+    //std::cout<<result<<endl;
 
     delete tree;
 }

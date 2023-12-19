@@ -199,6 +199,10 @@ private:
             if (file) {
                 return new File(node->path());
             }
+            Link * link = dynamic_cast<Link *>(node);
+            if (link) {
+                return new Link(link->path(), link->getTarget());
+            }
 
             Node * clonedFolder = new Folder(node->path());
 
