@@ -4,65 +4,74 @@
 #include "order_by.h"
 
 class FolderIteratorFactory: public IteratorFactory {
-    static IteratorFactory * instance(){
-        if (_instance == nullptr){
-            _instance = new FolderIteratorFactory();
+    public:
+        static FolderIteratorFactory * instance(){
+            if (_instance == nullptr){
+                _instance = new FolderIteratorFactory();
+            }
+            return _instance;
         }
-        return _instance;
-    }
 
-    Iterator * create(Folder * node, int operationCount){
-        return new Folder::FolderIterator(node, operationCount);
-    }
+        Iterator * create(Folder * node, int operationCount){
+            return new Folder::FolderIterator(node, operationCount);
+        }
 
     private:
-        static IteratorFactory * _instance;
+        static FolderIteratorFactory * _instance;
 };
+FolderIteratorFactory* FolderIteratorFactory::_instance = nullptr;
 
 class OrderByNameIteratorFactory: public IteratorFactory {
-    static IteratorFactory * instance(){
-        if (_instance == nullptr){
-            _instance = new FolderIteratorFactory();
+    public:
+        static OrderByNameIteratorFactory * instance(){
+            if (_instance == nullptr){
+                _instance = new OrderByNameIteratorFactory();
+            }
+            return _instance;
         }
-        return _instance;
-    }
 
-    Iterator * create(Folder * node, int operationCount){
-        return new Folder::OrderByNameIterator(node, operationCount);
-    }
+        Iterator * create(Folder * node, int operationCount){
+            return new Folder::OrderByNameIterator(node, operationCount);
+        }
 
     private:
-        static IteratorFactory * _instance;
+        static OrderByNameIteratorFactory * _instance;
 };
+OrderByNameIteratorFactory* OrderByNameIteratorFactory::_instance = nullptr;
+
 
 class OrderByNameWithFolderFirstIteratorFactory: public IteratorFactory {
-    static IteratorFactory * instance(){
-        if (_instance == nullptr){
-            _instance = new FolderIteratorFactory();
+    public:
+        static OrderByNameWithFolderFirstIteratorFactory * instance(){
+            if (_instance == nullptr){
+                _instance = new OrderByNameWithFolderFirstIteratorFactory();
+            }
+            return _instance;
         }
-        return _instance;
-    }
 
-    Iterator * create(Folder * node, int operationCount){
-        return new Folder::OrderByNameWithFolderFirstIterator(node, operationCount);
-    }
+        Iterator * create(Folder * node, int operationCount){
+            return new Folder::OrderByNameWithFolderFirstIterator(node, operationCount);
+        }
 
     private:
-        static IteratorFactory * _instance;
+        static OrderByNameWithFolderFirstIteratorFactory * _instance;
 };
+OrderByNameWithFolderFirstIteratorFactory* OrderByNameWithFolderFirstIteratorFactory::_instance = nullptr;
 
 class OrderByKindIteratorFactory: public IteratorFactory {
-    static IteratorFactory * instance(){
-        if (_instance == nullptr){
-            _instance = new FolderIteratorFactory();
+    public:
+        static OrderByKindIteratorFactory * instance(){
+            if (_instance == nullptr){
+                _instance = new OrderByKindIteratorFactory();
+            }
+            return _instance;
         }
-        return _instance;
-    }
 
-    Iterator * create(Folder * node, int operationCount){
-        return new Folder::OrderByKindIterator(node, operationCount);
-    }
+        Iterator * create(Folder * node, int operationCount){
+            return new Folder::OrderByKindIterator(node, operationCount);
+        }
 
     private:
-        static IteratorFactory * _instance;
+        static OrderByKindIteratorFactory * _instance;
 };
+OrderByKindIteratorFactory* OrderByKindIteratorFactory::_instance = nullptr;
