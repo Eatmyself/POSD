@@ -16,7 +16,7 @@ InMemoryDrawingMapper * InMemoryDrawingMapper ::_instance = nullptr;
 Drawing* InMemoryDrawingMapper ::find(std::string id) {
     auto it = _data.find(id);
     if (it != _data.end()){
-        Painter * p = InMemoryPainterMapper::_instance()->find(it->second[0])
+        Painter * p = InMemoryPainterMapper::instance()->find(it->second[0])
         Drawing * d = new Drawing(id, it->p);
         InMemoryDrawingMapper::instance()->load(d);
         return d;
