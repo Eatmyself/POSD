@@ -49,7 +49,10 @@ void InMemoryDrawingMapper ::update(std::string id) {
 
 // delete
 void InMemoryDrawingMapper ::del(std::string id) {
-    abstractDelete(id);
+    auto it = _data.find(id);
+    if (it != _data.end()){
+        _data.erase(it);
+    }
 }
 
 std::string InMemoryDrawingMapper ::updateStmt(DomainObject * domainObject) const {
