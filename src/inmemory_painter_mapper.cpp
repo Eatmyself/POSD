@@ -26,9 +26,10 @@ void InMemoryPainterMapper::add(DomainObject * painter) {
 // update
 void InMemoryPainterMapper::update(std::string id) {
     DomainObject * painter = getDomainObject(id);
-    Painter * p = static_cast<Painter *>(painter);
-    if(painter)
-        _data[p->id()]=p->name();
+    if(painter){
+        Painter * p = static_cast<Painter *>(painter);
+         _data[p->id()]=p->name();
+    }
     else
         throw std::string("object corresponding to ID is not in id map"); 
 }

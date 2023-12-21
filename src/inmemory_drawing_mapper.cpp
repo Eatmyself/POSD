@@ -28,18 +28,23 @@ Drawing* InMemoryDrawingMapper ::find(std::string id) {
 void InMemoryDrawingMapper ::add(DomainObject * drawing) {
     Drawing * d = static_cast<Drawing *>(drawing);
     vector<std::string> tmp;
-    tmp.push_back(drawing->painter()->id());
-    tmp.push_back(drawing->getShapesAsString());
+    tmp.push_back(d->painter()->id());
+    tmp.push_back(d->getShapesAsString());
     _data[d->id()]=tmp;
 }
 
 // update
 void InMemoryDrawingMapper ::update(std::string id) {
     DomainObject * drawing = getDomainObject(id);
-    if(drawing)
-        abstractUpdate(drawing);
+    if(drawing){
+        Drawing * d = static_cast<Drawing *>(drawing);
+        vector<std::string> tmp;
+        tmp.push_back(d->painter()->id());
+        tmp.push_back(d->getShapesAsString());
+        _data[d->id()]=tmp;
+    }
     else
-        throw std::string("object corresponding to ID is not in id map");    
+        throw std::string("object corresponding to ID is not in id map"); 
 }
 
 // delete
