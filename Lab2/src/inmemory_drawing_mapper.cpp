@@ -16,8 +16,8 @@ InMemoryDrawingMapper * InMemoryDrawingMapper ::_instance = nullptr;
 Drawing* InMemoryDrawingMapper ::find(std::string id) {
     auto it = _data.find(id);
     if (it != _data.end()){
-        Painter * p = InMemoryPainterMapper::instance()->find(it->second[0])
-        Drawing * d = new Drawing(id, it->p);
+        Painter * p = InMemoryPainterMapper::instance()->find(it->second[0]);
+        Drawing * d = new Drawing(id, p);
         InMemoryDrawingMapper::instance()->load(d);
         return d;
     }
@@ -27,7 +27,7 @@ Drawing* InMemoryDrawingMapper ::find(std::string id) {
 // add
 void InMemoryDrawingMapper ::add(DomainObject * drawing) {
     Drawing * d = static_cast<Drawing *>(drawing);
-    vector<std::string> tmp;
+    std::vector<std::string> tmp;
     tmp.push_back(d->painter()->id());
     tmp.push_back(d->getShapesAsString());
     _data[d->id()]=tmp;
@@ -38,7 +38,7 @@ void InMemoryDrawingMapper ::update(std::string id) {
     DomainObject * drawing = getDomainObject(id);
     if(drawing){
         Drawing * d = static_cast<Drawing *>(drawing);
-        vector<std::string> tmp;
+        std::vector<std::string> tmp;
         tmp.push_back(d->painter()->id());
         tmp.push_back(d->getShapesAsString());
         _data[d->id()]=tmp;
